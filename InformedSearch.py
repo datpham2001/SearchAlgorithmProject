@@ -1,18 +1,33 @@
 import os
 import matplotlib.pyplot as plt
+#Map 1
+# with open('maze_without_reward.txt', 'w') as outfile:
+#     outfile.write('2\n')
+#     outfile.write('3 6 -3\n')
+#     outfile.write('5 14 -7\n')
+#     outfile.write('xxxxxxxxxxxxxxxxxxxxxx\n')
+#     outfile.write('x   x   xx xx        x\n')
+#     outfile.write('x     x     xxxxxxxxxx\n')
+#     outfile.write('x x   +xx  xxxx xxx xx\n')
+#     outfile.write('  x   x x xx   xxxx  x\n')
+#     outfile.write('x          xx +xx  x x\n')
+#     outfile.write('xxxxxxx x      xx  x x\n')
+#     outfile.write('xxxxxxxxx  x x  xx   x\n')
+#     outfile.write('x          x x Sx x  x\n')
+#     outfile.write('xxxxx x  x x x     x x\n')
+#     outfile.write('xxxxxxxxxxxxxxxxxxxxxx')
 
+#Map 2(Map ma GBFS chay khong toi uu)
 with open('maze_without_reward.txt', 'w') as outfile:
     outfile.write('0\n')
     outfile.write('xxxxxxxxxxxxxxxxxxxxxx\n')
-    outfile.write('x   x   xx xx        x\n')
-    outfile.write('x     x     xxxxxxxxxx\n')
-    outfile.write('x x   +xx  xxxx xxx xx\n')
-    outfile.write('  x   x x xx   xxxx  x\n')
-    outfile.write('x          xx +xx  x x\n')
-    outfile.write('xxxxxxx x      xx  x x\n')
-    outfile.write('xxxxxxxxx  x x  xx   x\n')
-    outfile.write('x          x x Sx x  x\n')
-    outfile.write('xxxxx x  x x x     x x\n')
+    outfile.write('x                     \n')
+    outfile.write('x   xxxxxxxxxxxxxx xxx\n')
+    outfile.write('xxx x           xx xxx\n')
+    outfile.write('xxx   xxxxxxxxx xx xxx\n')
+    outfile.write('xxxxx x         xx xxx\n')
+    outfile.write('xS    x xxxxxxxxxx xxx\n')
+    outfile.write('xxxxxxx            xxx\n')
     outfile.write('xxxxxxxxxxxxxxxxxxxxxx')
 
 def visualize_maze(matrix, bonus, start, end, route=None):
@@ -113,17 +128,20 @@ class Node():
         self.h=h
         self.g=g
 
+#Lớp hàng đợi ưu tiên cho thuật toán A*
 class PriorQueueForA():
     def __init__(self):
         self.frontier = []
 
-    def add(self, node):
-        dem=0
-        for i in range(len(self.frontier)):
-            if node.h+node.g<=self.frontier[i].h+self.frontier[i].g:
-                dem=i
-                break
-        self.frontier.insert(dem,node)
+    # def add(self, node):
+    #     dem=0
+    #     for i in range(len(self.frontier)):
+    #         if node.h+node.g<=self.frontier[i].h+self.frontier[i].g:
+    #             dem=i
+    #             break
+    #     self.frontier.insert(dem,node)
+    def add(self,node):
+        self.frontier.append(node)
 
     def contains_state(self, state):
         return any(node.state == state for node in self.frontier)
@@ -131,23 +149,46 @@ class PriorQueueForA():
     def empty(self):
         return len(self.frontier) == 0
 
+    # def remove(self):
+    #     if self.empty():
+    #         raise Exception("empty frontier")
+    #     else:
+    #         node = self.frontier[0]
+    #         self.frontier = self.frontier[1:]
+    #         return node
     def remove(self):
-        if self.empty():
-            raise Exception("empty frontier")
-        else:
-            node = self.frontier[0]
-            self.frontier = self.frontier[1:]
-            return node
-
-class PriorQueueForGBFS(PriorQueueForA):
-    def add(self, node):
-        dem=0
+        minn = 0
         for i in range(len(self.frontier)):
-            if node.h<=self.frontier[i].h:
-                dem=i
-                break
-        self.frontier.insert(dem,node)
+            if self.frontier[i].g+self.frontier[i].h< self.frontier[minn].g+self.frontier[minn].h:
+                minn = i
+        item = self.frontier[minn]
+        del self.frontier[minn]
+        return item
 
+#Lớp hàng đợi ưu tiên cho thuật toán GBFS
+class PriorQueueForGBFS(PriorQueueForA):
+    def remove(self):
+        minn = 0
+        for i in range(len(self.frontier)):
+            if self.frontier[i].h< self.frontier[minn].h:
+                minn = i
+        item = self.frontier[minn]
+        del self.frontier[minn]
+        return item
+
+#Lớp hàng đợi ưu tiên cho thuật toán UCS
+class PriorQueueForUCS(PriorQueueForA):
+    def remove(self):
+        minn = 0
+        for i in range(len(self.frontier)):
+            if self.frontier[i].g< self.frontier[minn].g:
+                minn = i
+        item = self.frontier[minn]
+        del self.frontier[minn]
+        return item
+    
+
+#Tạo ô tường với các ô có giá trị là 'x'
 def makeWall(maze):
     height=len(maze)
     width=len(maze[0])
@@ -162,6 +203,7 @@ def makeWall(maze):
         walls.append(row)
     return walls
 
+#Tính toán các node con liền kề của thuật toán A*
 def neighbor(node):
     row,col =node.state
     candidates = [
@@ -178,6 +220,7 @@ def neighbor(node):
             res.append(temp)
     return res
 
+#Tính toán các node con liền kề của thuật toán GBFS
 def neighbor_for_gbfs(node):
     row,col =node.state
     candidates = [
@@ -191,6 +234,27 @@ def neighbor_for_gbfs(node):
         if 0<=r<height and 0<=c<width and not walls[r][c]:
             distanct=abs(end[0]-r)+abs(end[1]-c)
             temp=Node((r,c),action,node,distanct)
+            res.append(temp)
+    return res
+
+#Tính toán các node con liền kề của thuật toán UCS
+def neighbor_for_ucs(node,points):
+    row,col =node.state
+    candidates = [
+        ("up", (row - 1, col)),
+        ("down", (row + 1, col)),
+        ("left", (row, col - 1)),
+        ("right", (row, col + 1))
+    ]
+    res=[]
+    for action, (r,c) in candidates:
+        if 0<=r<height and 0<=c<width and not walls[r][c]:
+            point_at=0
+            for point in points:
+                if r==point[0] and c==point[1]:
+                    point_at=point[2]
+            gg=node.g+1+point_at
+            temp=Node((r,c),action,node,0,gg)
             res.append(temp)
     return res
 
@@ -220,6 +284,7 @@ def solve_maze(maze,start,end,type):
                 node=node.parent
             states.reverse()
             return states,num_explored
+        
         explored.add(node.state)
         if type==0:
             for node_neighbor in neighbor_for_gbfs(node):
@@ -229,9 +294,44 @@ def solve_maze(maze,start,end,type):
             for node_neighbor in neighbor(node):
                 if node_neighbor.state not in explored and not fringe.contains_state(node_neighbor.state):
                     fringe.add(node_neighbor)
+
+def solve_maze_with_points(maze,start,end,points):
+    num_explored=0
+    start_node=Node(start,None,None,0,0)
+    fringe=PriorQueueForUCS()
+    fringe.add(start_node)
+    explored=set()
+    while True:
+        if fringe.empty():
+            raise Exception("No path")
+        node=fringe.remove()
+        num_explored+=1
+        states=[]
+        actions=[]
+        if node.state==end:
+            for explore in explored:
+                print(explore)
+            while node is not None:
+                states.append(node.state)
+                actions.append(node.action)
+                node=node.parent
+            states.reverse()
+            return states,num_explored
+        explored.append(node.state)
         
+        for node_neighbor in neighbor_for_ucs(node,points):
+            if node_neighbor.state not in explored:
+                if not fringe.contains_state(node_neighbor.state):
+                    fringe.add(node_neighbor)
+                else:
+                    for i in range(len(fringe.frontier)):
+                        if node_neighbor.state==fringe.frontier[i].state and node_neighbor.g<fringe.frontier[i].g:
+                            del fringe.frontier[i]
+                            fringe.add(node_neighbor)
+                            print (node_neighbor.state)
+                            break
 
-
+            
 
 
 points,maze = read_file('./maze_without_reward.txt')
@@ -246,5 +346,9 @@ width=len(maze[0])
 #type=1 -> A* search 
 states,num_explored=solve_maze(maze,start,end,1)
 
+#states,num_explored=solve_maze_with_points(maze,start,end,points)
+
 #print(states)
 visualize_maze(maze,points,start,end,states)
+print(f'Chi phi cua duong di den dich: {len(states)}')
+print(f'So cac trang thai da xet: {num_explored}')
