@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 2
 3 6 -3
 5 14 -7
@@ -12,3 +13,24 @@ xxxxxxxxx  x x  xx   x
 x          x x Sx x  x
 xxxxx x  x x x     x x
 xxxxxxxxxxxxxxxxxxxxxx
+=======
+5
+1 21 -1
+4 7 -3
+6 13 -2
+8 3 -3
+9 19 -2
+xxxxxxxxxxxxxxxxxxxxxxxxx
+x  xxxx xxxx         +   
+x x  xxxxxxx  xxxx      x
+x    xxxxx      xxxx    x
+x      +   xx xxxx      x
+xxx xxxxx xxx xx   xx   x
+x    xxxxxxx +          x
+x         xx xxx xx  xxxx
+x  +    xxxx xxxxxxx   xx
+x xx               +    x
+x  x   xxxx  xx         x
+x    S xxxxxx  xxxxxxxxxx
+xxxxxxxxxxxxxxxxxxxxxxxxx
+>>>>>>> 6da44d0fdd5de4635c89cf162ba2c4f3ec2646d1
