@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
     Create file maze without point reward
 '''
 #Map 1
-with open('maze_with_reward.txt', 'w') as outfile:
+with open('maze_with_reward2.txt', 'w') as outfile:
     outfile.write('2\n')
     outfile.write('3 6 -3\n')
     outfile.write('5 14 -7\n')
@@ -21,6 +21,35 @@ with open('maze_with_reward.txt', 'w') as outfile:
     outfile.write('x          x x Sx x  x\n')
     outfile.write('xxxxx x  x x x     x x\n')
     outfile.write('xxxxxxxxxxxxxxxxxxxxxx')
+
+#Map 2
+with open('maze_with_reward3.txt', 'w') as outfile:
+    outfile.write('10\n')
+    outfile.write('1 2 -10\n')
+    outfile.write('1 3 -5\n')
+    outfile.write('3 4 -2\n')
+    outfile.write('1 21 -3\n')
+    outfile.write('3 28 -2\n')
+    outfile.write('3 29 -2\n')
+    outfile.write('4 16 -2\n')
+    outfile.write('4 18 -2\n')
+    outfile.write('13 29 -10\n')
+    outfile.write('8 12 -6\n')
+    outfile.write('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n')
+    outfile.write('x      x                            x\n')
+    outfile.write('x  x  xx  xxxxxxxxxxxxxxx x  xxxx x x\n')
+    outfile.write('x     xx  xx  xxxxxxxx               \n')
+    outfile.write('x  xxxxx  xxx x           x   xxxxxxx\n')
+    outfile.write('x xxx      xxxx   xx    xx  xx      x\n')
+    outfile.write('x xxx                           xxxxx\n')
+    outfile.write('x                     xx      xxxxxxx\n')
+    outfile.write('x xxxxxxxxxx      xxxxxx    xxx     x\n')
+    outfile.write('x xxxxxxxxxxx       xxxxxxxxxxxxxxxxx\n')
+    outfile.write('x xxxxxxxxx       xxxx           xxxx\n')
+    outfile.write('x xxx   xxxxx       xxxxxxxxxx      x\n')
+    outfile.write('x xx           xx  xxxxxxxxx       xx\n')
+    outfile.write('xS    xxxxxxxxxxxxxxxx  xxxxx    xxxx\n')
+    outfile.write('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx')
 
 
 

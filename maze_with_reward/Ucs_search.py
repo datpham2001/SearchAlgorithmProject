@@ -129,7 +129,7 @@ def solve_maze_with_points(maze,start,end,points):
                             break
 
 
-points,maze = readFile('./maze_with_reward.txt')
+points,maze = readFile('./maze_with_reward3.txt')
 (start, end) = findStartAndExitPosition(maze)
 walls=makeWall(maze)
 height=len(maze)
