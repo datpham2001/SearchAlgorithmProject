@@ -1,62 +1,7 @@
 import os
 import matplotlib.pyplot as plt
-#Map 1
-with open('maze_with_reward.txt', 'w') as outfile:
-    outfile.write('2\n')
-    outfile.write('3 6 -3\n')
-    outfile.write('5 14 -7\n')
-    outfile.write('xxxxxxxxxxxxxxxxxxxxxx\n')
-    outfile.write('x   x   xx xx        x\n')
-    outfile.write('x     x     xxxxxxxxxx\n')
-    outfile.write('x x   +xx  xxxx xxx xx\n')
-    outfile.write('  x   x x xx   xxxx  x\n')
-    outfile.write('x          xx +xx  x x\n')
-    outfile.write('xxxxxxx x      xx  x x\n')
-    outfile.write('xxxxxxxxx  x x  xx   x\n')
-    outfile.write('x          x x Sx x  x\n')
-    outfile.write('xxxxx x  x x x     x x\n')
-    outfile.write('xxxxxxxxxxxxxxxxxxxxxx')
+from create_and_visualize import *
 
-#Map 2(Map ma GBFS chay khong toi uu)
-with open('maze_without_reward2.txt', 'w') as outfile:
-    outfile.write('0\n')
-    outfile.write('xxxxxxxxxxxxxxxxxxxxxx\n')
-    outfile.write('x                     \n')
-    outfile.write('x   xxxxxxxxxxxxxx xxx\n')
-    outfile.write('xxx x           xx xxx\n')
-    outfile.write('xxx   xxxxxxxxx xx xxx\n')
-    outfile.write('xxxxx x         xx xxx\n')
-    outfile.write('xS    x xxxxxxxxxx xxx\n')
-    outfile.write('xxxxxxx            xxx\n')
-    outfile.write('xxxxxxxxxxxxxxxxxxxxxx')
-
-#Map 3(Map ma GBFS voi A* chay tuong tu nhau)
-with open('maze_without_reward3.txt', 'w') as outfile:
-    outfile.write('0\n')
-    outfile.write('xxxxxxxxxxxxxxxxxxxxxx\n')
-    outfile.write('x   xx    xxx    x    \n')
-    outfile.write('x   xx xxxxxxxx xx xxx\n')
-    outfile.write('xxx x           xx xxx\n')
-    outfile.write('xxx   xxxxxxxxx xx xxx\n')
-    outfile.write('xxxxx x            xxx\n')
-    outfile.write('xS    x xxxxxxxxxxxxxx\n')
-    outfile.write('xxxxxxx            xxx\n')
-    outfile.write('xxxxxxxxxxxxxxxxxxxxxx')
-
-#Map 4(Map cua thay)
-with open('maze_without_reward4.txt', 'w') as outfile:
-    outfile.write('0\n')
-    outfile.write('xxxxxxxxxxxxxxxxxxxxxx\n')
-    outfile.write('x   x   xx xx        x\n')
-    outfile.write('x     x     xxxxxxxxxx\n')
-    outfile.write('x x    xx  xxxx xxx xx\n')
-    outfile.write('  x   x x xx   xxxx  x\n')
-    outfile.write('x          xx  xx  x x\n')
-    outfile.write('xxxxxxx x      xx  x x\n')
-    outfile.write('xxxxxxxxx  x x  xx   x\n')
-    outfile.write('x          x x Sx x  x\n')
-    outfile.write('xxxxx x  x x x     x x\n')
-    outfile.write('xxxxxxxxxxxxxxxxxxxxxx')
 
 def visualize_maze(matrix, bonus, start, end, route=None):
     """
@@ -114,39 +59,8 @@ def visualize_maze(matrix, bonus, start, end, route=None):
     for _, point in enumerate(bonus):
         print(f'Bonus point at position (x, y) = {point[0], point[1]} with point {point[2]}')
 
-def read_file(file_name: str = 'maze.txt'):
-    f=open(file_name,'r')
-    n_bonus_points = int(next(f)[:-1])
-    bonus_points = []
-    for i in range(n_bonus_points):
-        x, y, reward = map(int, next(f)[:-1].split(' '))
-        bonus_points.append((x, y, reward))
-
-    text=f.read()
-    matrix=[list(i) for i in text.splitlines()]
-    f.close()
-
-    return bonus_points, matrix
 
 
-def findStartAndExitPosition(maze):
-    row, col = len(maze), len(maze[0])
-    start = (0, 0)
-    end = ''
-
-    for i in range(row):
-        for j in range(col):
-            if (maze[i][j] == 'S'):
-                start = (i, j)
-
-            elif (maze[i][j] == ' '):
-                if (i == 0) or (i == len(maze) - 1) or (j == 0) or (j == len(maze[0]) - 1):
-                    end = (i, j)
-
-            else:
-                pass
-
-    return (start, end)
 
 class Node():
     def __init__(self,state,action,parent,h=0,g=0):
@@ -204,17 +118,7 @@ class PriorQueueForGBFS(PriorQueueForA):
         del self.frontier[minn]
         return item
 
-#Lớp hàng đợi ưu tiên cho thuật toán UCS
-class PriorQueueForUCS(PriorQueueForA):
-    def remove(self):
-        minn = 0
-        for i in range(len(self.frontier)):
-            if self.frontier[i].g< self.frontier[minn].g:
-                minn = i
-        item = self.frontier[minn]
-        del self.frontier[minn]
-        return item
-    
+
 
 #Tạo ô tường với các ô có giá trị là 'x'
 def makeWall(maze):
@@ -265,26 +169,7 @@ def neighbor_for_gbfs(node):
             res.append(temp)
     return res
 
-#Tính toán các node con liền kề của thuật toán UCS
-def neighbor_for_ucs(node,points):
-    row,col =node.state
-    candidates = [
-        ("up", (row - 1, col)),
-        ("down", (row + 1, col)),
-        ("left", (row, col - 1)),
-        ("right", (row, col + 1))
-    ]
-    res=[]
-    for action, (r,c) in candidates:
-        if 0<=r<height and 0<=c<width and not walls[r][c]:
-            point_at=0
-            for point in points:
-                if r==point[0] and c==point[1]:
-                    point_at=point[2]
-            gg=node.g+1+point_at
-            temp=Node((r,c),action,node,0,gg)
-            res.append(temp)
-    return res
+
 
 #type=0 -> Greedy best first search
 #type=1 -> A* search 
@@ -323,58 +208,20 @@ def solve_maze(maze,start,end,type):
                 if node_neighbor.state not in explored and not fringe.contains_state(node_neighbor.state):
                     fringe.add(node_neighbor)
 
-def solve_maze_with_points(maze,start,end,points):
-    num_explored=0
-    start_node=Node(start,None,None,0,0)
-    fringe=PriorQueueForUCS()
-    fringe.add(start_node)
-    explored=set()
-    while True:
-        if fringe.empty():
-            raise Exception("No path")
-        node=fringe.remove()
-        num_explored+=1
-        states=[]
-        actions=[]
-        if node.state==end:
-            path_cost=node.g
-            while node is not None:
-                states.append(node.state)
-                actions.append(node.action)
-                node=node.parent
-            states.reverse()
-            return states,num_explored,path_cost
-        explored.add(node.state)
-        
-        for node_neighbor in neighbor_for_ucs(node,points):
-            if node_neighbor.state not in explored:
-                if not fringe.contains_state(node_neighbor.state):
-                    fringe.add(node_neighbor)
-                else:
-                    for i in range(len(fringe.frontier)):
-                        if node_neighbor.state==fringe.frontier[i].state and node_neighbor.g<fringe.frontier[i].g:
-                            del fringe.frontier[i]
-                            fringe.add(node_neighbor)
-                            break
+
 
             
 
 
-points,maze = read_file('./maze_with_reward.txt')
+points,maze = readFile('./maze_without_reward5.txt')
 (start, end) = findStartAndExitPosition(maze)
 walls=makeWall(maze)
 height=len(maze)
 width=len(maze[0])
-
 #type=0 -> Greedy best first search
-#states,num_explored=solve_maze(maze,start,end,0)
-
 #type=1 -> A* search 
-#states,num_explored=solve_maze(maze,start,end,1)
-
-states,num_explored,path_cost=solve_maze_with_points(maze,start,end,points)
-#states=[]
+type=int(input("Nhap loai tim kiem(0: GBFS, 1: A*): "))
+states,num_explored=solve_maze(maze,start,end,type)
 visualize_maze(maze,points,start,end,states)
-#print(f'Chi phi cua duong di den dich: {len(states)}')
-print(f'Chi phi cua duong di den dich: {path_cost}')
+print(f'Chi phi cua duong di den dich: {len(states)}')
 print(f'So cac trang thai da xet: {num_explored}')

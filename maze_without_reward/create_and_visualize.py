@@ -18,6 +18,47 @@ with open('maze_without_reward1.txt', 'w') as outfile:
     outfile.write('x     xxxxx   xxxxxxxx\n')
     outfile.write('xxxxx xxxxxxxxxxxxxxxx')
 
+#Map 2(Map ma GBFS chay khong toi uu)
+with open('maze_without_reward2.txt', 'w') as outfile:
+    outfile.write('0\n')
+    outfile.write('xxxxxxxxxxxxxxxxxxxxxx\n')
+    outfile.write('x                     \n')
+    outfile.write('x   xxxxxxxxxxxxxx xxx\n')
+    outfile.write('xxx x           xx xxx\n')
+    outfile.write('xxx   xxxxxxxxx xx xxx\n')
+    outfile.write('xxxxx x         xx xxx\n')
+    outfile.write('xS    x xxxxxxxxxx xxx\n')
+    outfile.write('xxxxxxx            xxx\n')
+    outfile.write('xxxxxxxxxxxxxxxxxxxxxx')
+
+#Map 3(Map ma GBFS voi A* chay tuong tu nhau)
+with open('maze_without_reward3.txt', 'w') as outfile:
+    outfile.write('0\n')
+    outfile.write('xxxxxxxxxxxxxxxxxxxxxx\n')
+    outfile.write('x   xx    xxx    x    \n')
+    outfile.write('x   xx xxxxxxxx xx xxx\n')
+    outfile.write('xxx x           xx xxx\n')
+    outfile.write('xxx   xxxxxxxxx xx xxx\n')
+    outfile.write('xxxxx x            xxx\n')
+    outfile.write('xS    x xxxxxxxxxxxxxx\n')
+    outfile.write('xxxxxxx            xxx\n')
+    outfile.write('xxxxxxxxxxxxxxxxxxxxxx')
+
+#Map 4(Map cua thay)
+with open('maze_without_reward4.txt', 'w') as outfile:
+    outfile.write('0\n')
+    outfile.write('xxxxxxxxxxxxxxxxxxxxxx\n')
+    outfile.write('x   x   xx xx        x\n')
+    outfile.write('x     x     xxxxxxxxxx\n')
+    outfile.write('x x    xx  xxxx xxx xx\n')
+    outfile.write('  x   x x xx   xxxx  x\n')
+    outfile.write('x          xx  xx  x x\n')
+    outfile.write('xxxxxxx x      xx  x x\n')
+    outfile.write('xxxxxxxxx  x x  xx   x\n')
+    outfile.write('x          x x Sx x  x\n')
+    outfile.write('xxxxx x  x x x     x x\n')
+    outfile.write('xxxxxxxxxxxxxxxxxxxxxx')
+
 # Map 5 (big map)
 with open('maze_without_reward5.txt', 'w') as outfile:
     outfile.write('0\n')
