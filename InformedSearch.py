@@ -1,24 +1,24 @@
 import os
 import matplotlib.pyplot as plt
 #Map 1
-# with open('maze_without_reward.txt', 'w') as outfile:
-#     outfile.write('2\n')
-#     outfile.write('3 6 -3\n')
-#     outfile.write('5 14 -7\n')
-#     outfile.write('xxxxxxxxxxxxxxxxxxxxxx\n')
-#     outfile.write('x   x   xx xx        x\n')
-#     outfile.write('x     x     xxxxxxxxxx\n')
-#     outfile.write('x x   +xx  xxxx xxx xx\n')
-#     outfile.write('  x   x x xx   xxxx  x\n')
-#     outfile.write('x          xx +xx  x x\n')
-#     outfile.write('xxxxxxx x      xx  x x\n')
-#     outfile.write('xxxxxxxxx  x x  xx   x\n')
-#     outfile.write('x          x x Sx x  x\n')
-#     outfile.write('xxxxx x  x x x     x x\n')
-#     outfile.write('xxxxxxxxxxxxxxxxxxxxxx')
+with open('maze_with_reward.txt', 'w') as outfile:
+    outfile.write('2\n')
+    outfile.write('3 6 -3\n')
+    outfile.write('5 14 -7\n')
+    outfile.write('xxxxxxxxxxxxxxxxxxxxxx\n')
+    outfile.write('x   x   xx xx        x\n')
+    outfile.write('x     x     xxxxxxxxxx\n')
+    outfile.write('x x   +xx  xxxx xxx xx\n')
+    outfile.write('  x   x x xx   xxxx  x\n')
+    outfile.write('x          xx +xx  x x\n')
+    outfile.write('xxxxxxx x      xx  x x\n')
+    outfile.write('xxxxxxxxx  x x  xx   x\n')
+    outfile.write('x          x x Sx x  x\n')
+    outfile.write('xxxxx x  x x x     x x\n')
+    outfile.write('xxxxxxxxxxxxxxxxxxxxxx')
 
 #Map 2(Map ma GBFS chay khong toi uu)
-with open('maze_without_reward.txt', 'w') as outfile:
+with open('maze_without_reward2.txt', 'w') as outfile:
     outfile.write('0\n')
     outfile.write('xxxxxxxxxxxxxxxxxxxxxx\n')
     outfile.write('x                     \n')
@@ -28,6 +28,34 @@ with open('maze_without_reward.txt', 'w') as outfile:
     outfile.write('xxxxx x         xx xxx\n')
     outfile.write('xS    x xxxxxxxxxx xxx\n')
     outfile.write('xxxxxxx            xxx\n')
+    outfile.write('xxxxxxxxxxxxxxxxxxxxxx')
+
+#Map 3(Map ma GBFS voi A* chay tuong tu nhau)
+with open('maze_without_reward3.txt', 'w') as outfile:
+    outfile.write('0\n')
+    outfile.write('xxxxxxxxxxxxxxxxxxxxxx\n')
+    outfile.write('x   xx    xxx    x    \n')
+    outfile.write('x   xx xxxxxxxx xx xxx\n')
+    outfile.write('xxx x           xx xxx\n')
+    outfile.write('xxx   xxxxxxxxx xx xxx\n')
+    outfile.write('xxxxx x            xxx\n')
+    outfile.write('xS    x xxxxxxxxxxxxxx\n')
+    outfile.write('xxxxxxx            xxx\n')
+    outfile.write('xxxxxxxxxxxxxxxxxxxxxx')
+
+#Map 4(Map cua thay)
+with open('maze_without_reward4.txt', 'w') as outfile:
+    outfile.write('0\n')
+    outfile.write('xxxxxxxxxxxxxxxxxxxxxx\n')
+    outfile.write('x   x   xx xx        x\n')
+    outfile.write('x     x     xxxxxxxxxx\n')
+    outfile.write('x x    xx  xxxx xxx xx\n')
+    outfile.write('  x   x x xx   xxxx  x\n')
+    outfile.write('x          xx  xx  x x\n')
+    outfile.write('xxxxxxx x      xx  x x\n')
+    outfile.write('xxxxxxxxx  x x  xx   x\n')
+    outfile.write('x          x x Sx x  x\n')
+    outfile.write('xxxxx x  x x x     x x\n')
     outfile.write('xxxxxxxxxxxxxxxxxxxxxx')
 
 def visualize_maze(matrix, bonus, start, end, route=None):
@@ -309,15 +337,14 @@ def solve_maze_with_points(maze,start,end,points):
         states=[]
         actions=[]
         if node.state==end:
-            for explore in explored:
-                print(explore)
+            path_cost=node.g
             while node is not None:
                 states.append(node.state)
                 actions.append(node.action)
                 node=node.parent
             states.reverse()
-            return states,num_explored
-        explored.append(node.state)
+            return states,num_explored,path_cost
+        explored.add(node.state)
         
         for node_neighbor in neighbor_for_ucs(node,points):
             if node_neighbor.state not in explored:
@@ -328,13 +355,12 @@ def solve_maze_with_points(maze,start,end,points):
                         if node_neighbor.state==fringe.frontier[i].state and node_neighbor.g<fringe.frontier[i].g:
                             del fringe.frontier[i]
                             fringe.add(node_neighbor)
-                            print (node_neighbor.state)
                             break
 
             
 
 
-points,maze = read_file('./maze_without_reward.txt')
+points,maze = read_file('./maze_with_reward.txt')
 (start, end) = findStartAndExitPosition(maze)
 walls=makeWall(maze)
 height=len(maze)
@@ -344,11 +370,11 @@ width=len(maze[0])
 #states,num_explored=solve_maze(maze,start,end,0)
 
 #type=1 -> A* search 
-states,num_explored=solve_maze(maze,start,end,1)
+#states,num_explored=solve_maze(maze,start,end,1)
 
-#states,num_explored=solve_maze_with_points(maze,start,end,points)
-
-#print(states)
+states,num_explored,path_cost=solve_maze_with_points(maze,start,end,points)
+#states=[]
 visualize_maze(maze,points,start,end,states)
-print(f'Chi phi cua duong di den dich: {len(states)}')
+#print(f'Chi phi cua duong di den dich: {len(states)}')
+print(f'Chi phi cua duong di den dich: {path_cost}')
 print(f'So cac trang thai da xet: {num_explored}')
